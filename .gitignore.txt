@@ -1,8 +1,0 @@
-*.suo
-*.user
-*.ncb
-Debug/
-Release/
-CodeAnalyst/
-glm/
-packages/
