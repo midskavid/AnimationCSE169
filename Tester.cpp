@@ -197,7 +197,7 @@ void Tester::Keyboard(int key,int x,int y) {
 			break;
 		case 'q' : {
 			// Increase X
-			Joint * jt = Skeleton::sOrderedJoints[JointId];
+			auto jt = Skeleton::sOrderedJoints[JointId];
 			jt->mPose.x += Change;
 			std::cout << "Current Pose : " << jt->mPose.x << " " << jt->mPose.y << " " << jt->mPose.z << std::endl;
 			Update();
@@ -205,7 +205,7 @@ void Tester::Keyboard(int key,int x,int y) {
 		}
 		case 'w': {
 			// Increase Y
-			Joint * jt = Skeleton::sOrderedJoints[JointId];
+			auto jt = Skeleton::sOrderedJoints[JointId];
 			jt->mPose.y += Change;
 			std::cout << "Current Pose : " << jt->mPose.x << " " << jt->mPose.y << " " << jt->mPose.z << std::endl;
 			Update();
@@ -213,7 +213,7 @@ void Tester::Keyboard(int key,int x,int y) {
 		}
 		case 'e': {
 			// Increase Z
-			Joint * jt = Skeleton::sOrderedJoints[JointId];
+			auto jt = Skeleton::sOrderedJoints[JointId];
 			jt->mPose.z += Change;
 			std::cout << "Current Pose : " << jt->mPose.x << " " << jt->mPose.y << " " << jt->mPose.z << std::endl;
 			Update();
@@ -221,7 +221,7 @@ void Tester::Keyboard(int key,int x,int y) {
 		}
 		case 'a': {
 			// Decrease X
-			Joint * jt = Skeleton::sOrderedJoints[JointId];
+			auto jt = Skeleton::sOrderedJoints[JointId];
 			jt->mPose.x -= Change;
 			std::cout << "Current Pose : " << jt->mPose.x << " " << jt->mPose.y << " " << jt->mPose.z << std::endl;
 			Update();
@@ -229,7 +229,7 @@ void Tester::Keyboard(int key,int x,int y) {
 		}
 		case 's': {
 			// Decrease Y
-			Joint * jt = Skeleton::sOrderedJoints[JointId];
+			auto jt = Skeleton::sOrderedJoints[JointId];
 			jt->mPose.y -= Change;
 			std::cout << "Current Pose : " << jt->mPose.x << " " << jt->mPose.y << " " << jt->mPose.z << std::endl;
 			Update();
@@ -237,7 +237,7 @@ void Tester::Keyboard(int key,int x,int y) {
 		}
 		case 'd': {
 			// Decrease Z
-			Joint * jt = Skeleton::sOrderedJoints[JointId];
+			auto jt = Skeleton::sOrderedJoints[JointId];
 			jt->mPose.z -= Change;
 			std::cout << "Current Pose : " << jt->mPose.x << " " << jt->mPose.y << " " << jt->mPose.z << std::endl;
 			Update();

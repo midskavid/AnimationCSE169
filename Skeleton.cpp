@@ -4,7 +4,7 @@
 #include "BallJoint.h"
 #include <string>
 
-std::vector<Joint*> Skeleton::sOrderedJoints;
+std::vector<std::shared_ptr<Joint>> Skeleton::sOrderedJoints;
 std::vector<std::string> Skeleton::sOrderedJointName;
 
 void Skeleton::Load(std::string &filename)
@@ -14,7 +14,7 @@ void Skeleton::Load(std::string &filename)
 	token.FindToken("balljoint");
 	char str[100];
 	token.GetToken(str);
-	mRoot = new BallJoint;
+	mRoot = std::make_shared<BallJoint>();
 	sOrderedJoints.emplace_back(mRoot);
 	sOrderedJointName.emplace_back(str);
 	mRoot->Load(token);
