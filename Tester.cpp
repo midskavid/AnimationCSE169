@@ -3,9 +3,12 @@
 ////////////////////////////////////////
 
 #include "Tester.h"
+#include <iostream>
 
 ////////////////////////////////////////////////////////////////////////////////
 #define SPINNING_CUBE 0
+#define FPS 100
+
 static Tester *TESTER=0;
 
 int main(int argc, char **argv) {
@@ -66,12 +69,24 @@ Tester::Tester(const char *windowTitle,int argc,char **argv) {
 
 	// Initialize components
 	Program=new ShaderProgram("Model.glsl",ShaderProgram::eRender);
+	ProgramSkin = new ShaderProgram("Model_Skin.glsl", ShaderProgram::eRender);
 #if SPINNING_CUBE
 	Cube=new SpinningCube;
 #else
-	Skel = new Skeleton;
-	std::string filename = (argc > 1) ? argv[1] : "test.skel";
-	Skel->Load(filename);
+	mSkel = new Skeleton;
+	std::string filename = (argc > 3) ? argv[1] : "waspA.skel";
+	mSkel->Load(filename);
+	mSkin = new Skin;
+	filename = (argc > 3) ? argv[2] : "waspA.skin";
+	mSkin->Load(filename);
+	mAnimationClip = new AnimationClip;
+	filename = (argc > 3) ? argv[3] : "waspA.anim";
+	mAnimationClip->Load(filename);
+	mPlayer = new Player(mSkel, 1.0f/FPS, mAnimationClip);
+#pragma message("TODO : clean this.. shouldn't be here")
+	mSkel->Update();
+	mSkin->Update();
+
 #endif
 	Cam=new Camera;
 	Cam->SetAspect(float(WinX)/float(WinY));
@@ -81,10 +96,14 @@ Tester::Tester(const char *windowTitle,int argc,char **argv) {
 
 Tester::~Tester() {
 	delete Program;
+	delete ProgramSkin;
 #if SPINNING_CUBE
 	delete Cube;
 #else
-	delete Skel;
+	delete mSkel;
+	delete mSkin;
+	delete mAnimationClip;
+	delete mPlayer;
 #endif
 	delete Cam;
 
@@ -98,8 +117,10 @@ void Tester::Update() {
 	// Update the components in the world
 #if SPINNING_CUBE
 	Cube->Update();
-#else 
-	Skel->Update();
+#else
+	mPlayer->Animate();
+	mSkel->Update();
+	mSkin->Update();
 #endif
 	Cam->Update();
 
@@ -131,7 +152,8 @@ void Tester::Draw() {
 #if SPINNING_CUBE
 	Cube->Draw(Cam->GetViewProjectMtx(),Program->GetProgramID());
 #else 
-	Skel->Draw(Cam->GetViewProjectMtx(), Program->GetProgramID());
+	//mSkel->Draw(Cam->GetViewProjectMtx(), Program->GetProgramID());
+	mSkin->Draw(Cam->GetViewProjectMtx(), ProgramSkin->GetProgramID());
 #endif
 	// Finish drawing scene
 	glFinish();
@@ -161,6 +183,66 @@ void Tester::Keyboard(int key,int x,int y) {
 		case 0x1b:		// Escape
 			Quit();
 			break;
+		case 'n' :
+			// Next Joint..
+			JointId = (JointId+1) % Skeleton::sOrderedJoints.size();
+			std::cout << "Joint " << Skeleton::sOrderedJointName[JointId] << " selected.\n";
+			Update();
+			break;
+		case 'b':
+			// Next Joint..
+			JointId = (JointId-1) % Skeleton::sOrderedJoints.size();
+			std::cout << "Joint " << Skeleton::sOrderedJointName[JointId] << " selected.\n";
+			Update();
+			break;
+		case 'q' : {
+			// Increase X
+			Joint * jt = Skeleton::sOrderedJoints[JointId];
+			jt->mPose.x += Change;
+			std::cout << "Current Pose : " << jt->mPose.x << " " << jt->mPose.y << " " << jt->mPose.z << std::endl;
+			Update();
+			break;
+		}
+		case 'w': {
+			// Increase Y
+			Joint * jt = Skeleton::sOrderedJoints[JointId];
+			jt->mPose.y += Change;
+			std::cout << "Current Pose : " << jt->mPose.x << " " << jt->mPose.y << " " << jt->mPose.z << std::endl;
+			Update();
+			break;
+		}
+		case 'e': {
+			// Increase Z
+			Joint * jt = Skeleton::sOrderedJoints[JointId];
+			jt->mPose.z += Change;
+			std::cout << "Current Pose : " << jt->mPose.x << " " << jt->mPose.y << " " << jt->mPose.z << std::endl;
+			Update();
+			break;
+		}
+		case 'a': {
+			// Decrease X
+			Joint * jt = Skeleton::sOrderedJoints[JointId];
+			jt->mPose.x -= Change;
+			std::cout << "Current Pose : " << jt->mPose.x << " " << jt->mPose.y << " " << jt->mPose.z << std::endl;
+			Update();
+			break;
+		}
+		case 's': {
+			// Decrease Y
+			Joint * jt = Skeleton::sOrderedJoints[JointId];
+			jt->mPose.y -= Change;
+			std::cout << "Current Pose : " << jt->mPose.x << " " << jt->mPose.y << " " << jt->mPose.z << std::endl;
+			Update();
+			break;
+		}
+		case 'd': {
+			// Decrease Z
+			Joint * jt = Skeleton::sOrderedJoints[JointId];
+			jt->mPose.z -= Change;
+			std::cout << "Current Pose : " << jt->mPose.x << " " << jt->mPose.y << " " << jt->mPose.z << std::endl;
+			Update();
+			break;
+		}
 		case 'r':
 			Reset();
 			break;

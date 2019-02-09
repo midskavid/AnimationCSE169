@@ -16,6 +16,7 @@ public:
 	void Load(Tokenizer& token);
 	void AddChild(Joint *joint);
 	void Draw(const glm::mat4 &viewProjMtx, uint shader);
+
 public:
 	std::vector<DoF> mJointDoF = std::vector<DoF>(3);
 	glm::mat4 mWorldMtx;

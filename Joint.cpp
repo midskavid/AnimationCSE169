@@ -1,5 +1,6 @@
 #include "Joint.h"
 #include "BallJoint.h"
+#include "Skeleton.h"
 
 void Joint::Update(glm::mat4& matrixParent)
 {
@@ -39,6 +40,10 @@ void Joint::Load(Tokenizer& token)
 		}
 		else if (strcmp(temp, "balljoint") == 0) {
 			Joint *jnt = new BallJoint;
+			Skeleton::sOrderedJoints.emplace_back(jnt);
+			char str[100];
+			token.GetToken(str);
+			Skeleton::sOrderedJointName.emplace_back(str);
 			jnt->Load(token);
 			AddChild(jnt);
 		}
@@ -85,4 +90,5 @@ void Joint::Draw(const glm::mat4 &viewProjMtx, uint shader)
 	Model mdl;
 	mdl.MakeBox(mBoxMin, mBoxMax);
 	mdl.Draw(mWorldMtx, viewProjMtx, shader);
+
 }

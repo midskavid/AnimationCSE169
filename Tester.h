@@ -8,6 +8,10 @@
 #include "Camera.h"
 #include "SpinningCube.h"
 #include "Skeleton.h"
+#include "Skin.h"
+#include "Joint.h"
+#include "Player.h"
+#include "AnimationClip.h"
 
 ////////////////////////////////////////////////////////////////////////////////
 
@@ -41,11 +45,18 @@ private:
 	bool LeftDown,MiddleDown,RightDown;
 	int MouseX,MouseY;
 
+	//  Interaction 
+	int JointId=0;
+	float Change = 0.1f;
 	// Components
 	ShaderProgram *Program;
+	ShaderProgram *ProgramSkin;
 	SpinningCube *Cube;
-	Skeleton *Skel;
+	Skeleton *mSkel;
+	Skin *mSkin;
 	Camera *Cam;
+	Player *mPlayer;
+	AnimationClip *mAnimationClip;
 };
 
 ////////////////////////////////////////////////////////////////////////////////
