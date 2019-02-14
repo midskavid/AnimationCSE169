@@ -52,11 +52,11 @@ private:
 	ShaderProgram *Program;
 	ShaderProgram *ProgramSkin;
 	SpinningCube *Cube;
-	Skeleton *mSkel;
-	Skin *mSkin;
+	std::unique_ptr<Skeleton> mSkel;
+	std::unique_ptr<Skin> mSkin;
 	Camera *Cam;
-	Player *mPlayer;
-	AnimationClip *mAnimationClip;
+	std::unique_ptr<Player> mPlayer;
+	std::unique_ptr<AnimationClip> mAnimationClip;
 };
 
 ////////////////////////////////////////////////////////////////////////////////

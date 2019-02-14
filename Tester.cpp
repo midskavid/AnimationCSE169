@@ -73,16 +73,16 @@ Tester::Tester(const char *windowTitle,int argc,char **argv) {
 #if SPINNING_CUBE
 	Cube=new SpinningCube;
 #else
-	mSkel = new Skeleton;
+	mSkel = std::make_unique<Skeleton>();
 	std::string filename = (argc > 3) ? argv[1] : "waspA.skel";
 	mSkel->Load(filename);
-	mSkin = new Skin;
+	mSkin = std::make_unique<Skin>();
 	filename = (argc > 3) ? argv[2] : "waspA.skin";
 	mSkin->Load(filename);
-	mAnimationClip = new AnimationClip;
+	mAnimationClip = std::make_unique<AnimationClip>();
 	filename = (argc > 3) ? argv[3] : "waspA.anim";
 	mAnimationClip->Load(filename);
-	mPlayer = new Player(mSkel, 1.0f/ TIMEPERIOD, mAnimationClip);
+	mPlayer = std::make_unique<Player>(mSkel.get(), 1.0f/ TIMEPERIOD, mAnimationClip.get());
 #pragma message("TODO : clean this.. shouldn't be here")
 	mSkel->Update();
 	mSkin->Update();
@@ -99,11 +99,6 @@ Tester::~Tester() {
 	delete ProgramSkin;
 #if SPINNING_CUBE
 	delete Cube;
-#else
-	delete mSkel;
-	delete mSkin;
-	delete mAnimationClip;
-	delete mPlayer;
 #endif
 	delete Cam;
 

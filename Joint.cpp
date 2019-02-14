@@ -39,7 +39,7 @@ void Joint::Load(Tokenizer& token)
 			mPose.z = token.GetFloat();
 		}
 		else if (strcmp(temp, "balljoint") == 0) {
-			Joint *jnt = new BallJoint;
+			auto jnt = std::make_shared<BallJoint>();
 			Skeleton::sOrderedJoints.emplace_back(jnt);
 			char str[100];
 			token.GetToken(str);
@@ -74,9 +74,8 @@ void Joint::Load(Tokenizer& token)
 	}
 }
 
-void Joint::AddChild(Joint *joint)
+void Joint::AddChild(std::shared_ptr<Joint> joint)
 {
-	joint->mParent = this;
 	mChildrens.emplace_back(joint);
 }
 

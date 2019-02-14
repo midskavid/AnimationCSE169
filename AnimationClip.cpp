@@ -16,7 +16,7 @@ void AnimationClip::Load(std::string &filename)
 	// Now parse channels..
 	mChannels.reserve(numChannels);
 	for (int ii = 0; ii < numChannels; ++ii) {
-		Channel *ch = new Channel;
+		auto ch = std::make_shared<Channel>();
 		ch->Load(tokenPos);
 		mChannels.emplace_back(ch);
 	}

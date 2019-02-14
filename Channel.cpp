@@ -45,7 +45,7 @@ void Channel::Load(Tokenizer &token)
 	token.SkipLine();
 	for (int ii = 0; ii < numKeys; ++ii) {
 		// Parse key...
-		KeyFrame *kf = new KeyFrame;
+		auto kf = std::make_shared<KeyFrame>();
 		kf->mTime = token.GetFloat();
 		kf->mValue = token.GetFloat();
 		char sv1[100], sv2[100];

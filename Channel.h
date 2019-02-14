@@ -4,6 +4,7 @@
 #include "Model.h"
 #include "KeyFrame.h"
 #include "Tokenizer.h"
+#include <memory>
 
 class Channel {
 public:
@@ -20,7 +21,7 @@ public:
 	float Evaluate(float time);
 	void PreCompute();
 public:
-	std::vector<KeyFrame*> mKeyFrames;
+	std::vector<std::shared_ptr<KeyFrame>> mKeyFrames;
 	ExtrapolationType mExtrapIn;
 	ExtrapolationType mExtrapOut;
 };
