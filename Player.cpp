@@ -21,11 +21,12 @@ void Player::Animate()
 	// Now pose has all information about DOFs..
 
 	//Handle root translation..
+#if 1
 	auto jt = Skeleton::sOrderedJoints[0];
 	jt->mOffset.x = pose[0];
 	jt->mOffset.y = pose[1];
 	jt->mOffset.z = pose[2];
-
+#endif
 	//Now pose all other joints...
 	assert((Skeleton::sOrderedJoints.size() * 3 == pose.size()-3) && "Whoaa! THis is definitely not right!");
 	for (size_t ii = 0; ii < Skeleton::sOrderedJoints.size(); ++ii) {

@@ -7,7 +7,7 @@
 
 ////////////////////////////////////////////////////////////////////////////////
 #define SPINNING_CUBE 0
-#define FPS 100
+#define TIMEPERIOD 50
 
 static Tester *TESTER=0;
 
@@ -82,7 +82,7 @@ Tester::Tester(const char *windowTitle,int argc,char **argv) {
 	mAnimationClip = new AnimationClip;
 	filename = (argc > 3) ? argv[3] : "waspA.anim";
 	mAnimationClip->Load(filename);
-	mPlayer = new Player(mSkel, 1.0f/FPS, mAnimationClip);
+	mPlayer = new Player(mSkel, 1.0f/ TIMEPERIOD, mAnimationClip);
 #pragma message("TODO : clean this.. shouldn't be here")
 	mSkel->Update();
 	mSkin->Update();
