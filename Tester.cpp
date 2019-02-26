@@ -3,6 +3,7 @@
 ////////////////////////////////////////
 
 #include "Tester.h"
+#include "Milieu.h"
 #include <iostream>
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -196,7 +197,41 @@ void Tester::Keyboard(int key,int x,int y) {
 			Quit();
 			break;
 #if CLOTHSIMULATION
-
+		case 'v' :
+			// Increase speed of wind here..
+			Milieu::mAirSpeed.z += 1.0f;
+			std::cout << "Wind Velocity : " << Milieu::mAirSpeed.x << " " << Milieu::mAirSpeed.y << " " << Milieu::mAirSpeed.z << std::endl;
+			break;
+		case 'b' : 
+			// Decrease speed of wind here...
+			Milieu::mAirSpeed.z -= 1.0f;
+			std::cout << "Wind Velocity : " << Milieu::mAirSpeed.x << " " << Milieu::mAirSpeed.y << " " << Milieu::mAirSpeed.z << std::endl;
+			break;
+		case 'c' :
+			Milieu::mAirSpeed.z = 0.0f;
+			std::cout << "No wind!"<<std::endl;
+			break;
+		case 'n' :
+			Milieu::mAirSpeed.z = 100.0f;
+			std::cout << "Let there be wind!" << std::endl;
+			break;
+		case 'w' :
+			// Rotate about y anticlock..
+			for (const auto& pt : mCloth->mParticles) {
+				if (pt->mIsFixed) {
+					auto r = glm::length(pt->mPosition);
+					pt->mPosition = glm::vec3(glm::cos(0.05f)*pt->mPosition.x - glm::sin(0.05f)*pt->mPosition.z, 0.0f, glm::sin(0.05f)*pt->mPosition.x + glm::cos(0.05f)*pt->mPosition.z);
+				}
+			}
+			break;
+		case 's':
+			// Rotate about y anticlock..
+			for (const auto& pt : mCloth->mParticles) {
+				if (pt->mIsFixed) {
+					auto r = glm::length(pt->mPosition);
+					pt->mPosition = glm::vec3(glm::cos(-0.05f)*pt->mPosition.x - glm::sin(-0.05f)*pt->mPosition.z, 0.0f, glm::sin(-0.05f)*pt->mPosition.x + glm::cos(-0.05f)*pt->mPosition.z);
+				}
+			}
 #else
 		case 'n' :
 			// Next Joint..
