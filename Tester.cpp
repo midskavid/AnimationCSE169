@@ -7,7 +7,8 @@
 
 ////////////////////////////////////////////////////////////////////////////////
 #define SPINNING_CUBE 0
-#define TIMEPERIOD 50
+#define CLOTHSIMULATION 1
+#define TIMEPERIOD 1000
 
 static Tester *TESTER=0;
 
@@ -70,8 +71,14 @@ Tester::Tester(const char *windowTitle,int argc,char **argv) {
 	// Initialize components
 	Program=new ShaderProgram("Model.glsl",ShaderProgram::eRender);
 	ProgramSkin = new ShaderProgram("Model_Skin.glsl", ShaderProgram::eRender);
+	ProgramCloth = new ShaderProgram("Model_Cloth.glsl", ShaderProgram::eRender);
 #if SPINNING_CUBE
 	Cube=new SpinningCube;
+#else
+#if CLOTHSIMULATION
+	mCloth = std::make_unique<Cloth>();
+	mCloth->InitCloth(10, 10);
+	mCloth->Update();
 #else
 	mSkel = std::make_unique<Skeleton>();
 	std::string filename = (argc > 3) ? argv[1] : "waspA.skel";
@@ -86,6 +93,7 @@ Tester::Tester(const char *windowTitle,int argc,char **argv) {
 #pragma message("TODO : clean this.. shouldn't be here")
 	mSkel->Update();
 	mSkin->Update();
+#endif
 
 #endif
 	Cam=new Camera;
@@ -97,6 +105,7 @@ Tester::Tester(const char *windowTitle,int argc,char **argv) {
 Tester::~Tester() {
 	delete Program;
 	delete ProgramSkin;
+	delete ProgramCloth;
 #if SPINNING_CUBE
 	delete Cube;
 #endif
@@ -113,9 +122,13 @@ void Tester::Update() {
 #if SPINNING_CUBE
 	Cube->Update();
 #else
+#if CLOTHSIMULATION
+	mCloth->Update();
+#else
 	mPlayer->Animate();
 	mSkel->Update();
 	mSkin->Update();
+#endif
 #endif
 	Cam->Update();
 
@@ -147,8 +160,12 @@ void Tester::Draw() {
 #if SPINNING_CUBE
 	Cube->Draw(Cam->GetViewProjectMtx(),Program->GetProgramID());
 #else 
+#if CLOTHSIMULATION
+	mCloth->Draw(Cam->GetViewProjectMtx(), ProgramCloth->GetProgramID());
+#else
 	//mSkel->Draw(Cam->GetViewProjectMtx(), Program->GetProgramID());
 	mSkin->Draw(Cam->GetViewProjectMtx(), ProgramSkin->GetProgramID());
+#endif
 #endif
 	// Finish drawing scene
 	glFinish();
@@ -178,6 +195,9 @@ void Tester::Keyboard(int key,int x,int y) {
 		case 0x1b:		// Escape
 			Quit();
 			break;
+#if CLOTHSIMULATION
+
+#else
 		case 'n' :
 			// Next Joint..
 			JointId = (JointId+1) % Skeleton::sOrderedJoints.size();
@@ -238,6 +258,7 @@ void Tester::Keyboard(int key,int x,int y) {
 			Update();
 			break;
 		}
+#endif
 		case 'r':
 			Reset();
 			break;

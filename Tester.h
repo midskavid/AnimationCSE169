@@ -12,6 +12,7 @@
 #include "Joint.h"
 #include "Player.h"
 #include "AnimationClip.h"
+#include "Cloth.h"
 
 ////////////////////////////////////////////////////////////////////////////////
 
@@ -51,9 +52,11 @@ private:
 	// Components
 	ShaderProgram *Program;
 	ShaderProgram *ProgramSkin;
+	ShaderProgram *ProgramCloth;
 	SpinningCube *Cube;
 	std::unique_ptr<Skeleton> mSkel;
 	std::unique_ptr<Skin> mSkin;
+	std::unique_ptr<Cloth> mCloth;
 	Camera *Cam;
 	std::unique_ptr<Player> mPlayer;
 	std::unique_ptr<AnimationClip> mAnimationClip;

@@ -4,6 +4,7 @@
 #include "Tokenizer.h"
 #include "Vertex.h"
 #include "Triangle.h"
+#include "Model.h"
 
 struct PostCompVertex {
 	glm::vec3 pos;
