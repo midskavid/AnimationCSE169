@@ -7,6 +7,7 @@ class Milieu {
 public:
 	static glm::vec3 mGravity;
 	static glm::vec3 mAirSpeed;
+	static glm::vec3 mWall;
 	static float mC;
 	static float mRho;
 };

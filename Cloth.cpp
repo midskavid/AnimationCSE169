@@ -167,12 +167,12 @@ void Cloth::Update()
 			// Apply gravity
 			pt->ApplyForce(Milieu::mGravity*pt->mMass);
 		}
-#if 1
+
 		for (const auto &tr : mTriangles) {
 			// Apply air-drag
 			tr->ApplyAerodynamicForce(Milieu::mAirSpeed, Milieu::mC, Milieu::mRho);
 		}
-#endif
+
 		for (const auto &sp : mSpringDampers) {
 			// Apply spring forces here..
 			sp->ApplySpringForces();
@@ -181,6 +181,27 @@ void Cloth::Update()
 		// Update and check for collision...
 		for (const auto &pt : mParticles) {
 			pt->Update(delT);
+
+			if (pt->mPosition.x > Milieu::mWall.x) {
+				pt->mPosition.x -= pt->mPosition.x- Milieu::mWall.x;
+				pt->mVelocity.x = -0.8f * pt->mVelocity.x;
+				pt->mVelocity.y = (1.0f-0.4f) * pt->mVelocity.y;
+				pt->mVelocity.z = (1.0f-0.4f) * pt->mVelocity.z;
+			}
+			if (pt->mPosition.y < Milieu::mWall.y) {
+				pt->mPosition.y -= pt->mPosition.y - Milieu::mWall.y;
+				pt->mVelocity.y = -0.8f * pt->mVelocity.y;
+				pt->mVelocity.x = (1.0f - 0.4f) * pt->mVelocity.x;
+				pt->mVelocity.z = (1.0f - 0.4f) * pt->mVelocity.z;
+
+			}
+			if (pt->mPosition.z > Milieu::mWall.z) {
+				pt->mPosition.z -= pt->mPosition.z - Milieu::mWall.z;
+				pt->mVelocity.z = -0.8f * pt->mVelocity.z;
+				pt->mVelocity.y = (1.0f - 0.4f) * pt->mVelocity.y;
+				pt->mVelocity.x = (1.0f - 0.4f) * pt->mVelocity.x;
+
+			}
 		}
 	}
 

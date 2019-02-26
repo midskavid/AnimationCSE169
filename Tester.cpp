@@ -9,7 +9,7 @@
 ////////////////////////////////////////////////////////////////////////////////
 #define SPINNING_CUBE 0
 #define CLOTHSIMULATION 1
-#define TIMEPERIOD 1000
+#define TIMEPERIOD 100
 
 static Tester *TESTER=0;
 
