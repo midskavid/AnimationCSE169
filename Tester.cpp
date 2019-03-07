@@ -8,7 +8,8 @@
 
 ////////////////////////////////////////////////////////////////////////////////
 #define SPINNING_CUBE 0
-#define CLOTHSIMULATION 1
+#define CLOTHSIMULATION 0
+#define CHAIN 1
 #define TIMEPERIOD 100
 
 static Tester *TESTER=0;
@@ -78,8 +79,13 @@ Tester::Tester(const char *windowTitle,int argc,char **argv) {
 #else
 #if CLOTHSIMULATION
 	mCloth = std::make_unique<Cloth>();
-	mCloth->InitCloth(10, 10);
+	mCloth->InitCloth(20, 20);
 	mCloth->Update();
+#elif CHAIN
+	mChain = std::make_unique<Chain>();
+	mGoal = std::make_unique<Goal>();
+	mChain->Init(5);
+	mChain->Update();
 #else
 	mSkel = std::make_unique<Skeleton>();
 	std::string filename = (argc > 3) ? argv[1] : "waspA.skel";
@@ -125,6 +131,8 @@ void Tester::Update() {
 #else
 #if CLOTHSIMULATION
 	mCloth->Update();
+#elif CHAIN
+	mChain->Update();
 #else
 	mPlayer->Animate();
 	mSkel->Update();
@@ -163,6 +171,9 @@ void Tester::Draw() {
 #else 
 #if CLOTHSIMULATION
 	mCloth->Draw(Cam->GetViewProjectMtx(), ProgramCloth->GetProgramID());
+#elif CHAIN
+	mChain->Draw(Cam->GetViewProjectMtx(), Program->GetProgramID());
+	mGoal->Draw(Cam->GetViewProjectMtx(), Program->GetProgramID());
 #else
 	//mSkel->Draw(Cam->GetViewProjectMtx(), Program->GetProgramID());
 	mSkin->Draw(Cam->GetViewProjectMtx(), ProgramSkin->GetProgramID());
@@ -232,6 +243,37 @@ void Tester::Keyboard(int key,int x,int y) {
 					pt->mPosition = glm::vec3(glm::cos(-0.05f)*pt->mPosition.x - glm::sin(-0.05f)*pt->mPosition.z, 0.0f, glm::sin(-0.05f)*pt->mPosition.x + glm::cos(-0.05f)*pt->mPosition.z);
 				}
 			}
+#elif CHAIN
+		case 'q': {
+			// Increase X
+			mGoal->Update(glm::vec3{ Change, 0.0f,0.0f });
+			break;
+		}
+		case 'w': {
+			// Increase Y
+			mGoal->Update(glm::vec3{ 0.0f, Change, 0.0f });
+			break;
+		}
+		case 'e': {
+			// Increase Z
+			mGoal->Update(glm::vec3{ 0.0f,0.0f, Change });
+			break;
+		}
+		case 'a': {
+			// Decrease X
+			mGoal->Update(glm::vec3{ -Change, 0.0f,0.0f });
+			break;
+		}
+		case 's': {
+			// Decrease Y
+			mGoal->Update(glm::vec3{ 0.0f, -Change,0.0f });
+			break;
+		}
+		case 'd': {
+			// Decrease Z
+			mGoal->Update(glm::vec3{ 0.0f,0.0f, -Change });
+			break;
+		}
 #else
 		case 'n' :
 			// Next Joint..

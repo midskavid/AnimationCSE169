@@ -13,7 +13,8 @@
 #include "Player.h"
 #include "AnimationClip.h"
 #include "Cloth.h"
-
+#include "Chain.h"
+#include "Goal.h"
 ////////////////////////////////////////////////////////////////////////////////
 
 // The 'Tester' is a simple top level application class. It creates and manages a
@@ -48,7 +49,7 @@ private:
 
 	//  Interaction 
 	int JointId=0;
-	float Change = 0.1f;
+	float Change = 0.05f;
 	// Components
 	ShaderProgram *Program;
 	ShaderProgram *ProgramSkin;
@@ -57,6 +58,8 @@ private:
 	std::unique_ptr<Skeleton> mSkel;
 	std::unique_ptr<Skin> mSkin;
 	std::unique_ptr<Cloth> mCloth;
+	std::unique_ptr<Chain> mChain;
+	std::unique_ptr<Goal> mGoal;
 	Camera *Cam;
 	std::unique_ptr<Player> mPlayer;
 	std::unique_ptr<AnimationClip> mAnimationClip;
