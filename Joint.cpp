@@ -4,6 +4,7 @@
 
 void Joint::Update(glm::mat4& matrixParent)
 {
+	mParentWorldMtx = matrixParent;
 	MakeLocalMatrix(); // Local Matrix..
 	mWorldMtx = matrixParent * mLocalMtx; // Forward Kinematics!!
 

@@ -21,6 +21,7 @@ public:
 public:
 	std::vector<DoF> mJointDoF = std::vector<DoF>(3);
 	glm::mat4 mWorldMtx;
+	glm::mat4 mParentWorldMtx;
 	glm::mat4 mLocalMtx;
 
 	// Tree Info
