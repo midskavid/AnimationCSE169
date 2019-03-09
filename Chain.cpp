@@ -2,6 +2,7 @@
 #include "Joint.h"
 #include "BallJoint.h"
 #include "Goal.h"
+#include <algorithm>
 
 void Chain::Init(int numJoints)
 {
@@ -37,18 +38,21 @@ void Chain::Update()
 {
 	auto goal = Goal::mPosGoal;
 	float TOLERANCE = 0.000001f;
+	float THRESH = 0.0001f;
 	mChain->Update(glm::mat4(1.0));
-#if 1
 	// calculate endaffector position...
 	auto lstJnt = mJoints.back();
+	std::vector<float> delPhiAll(mJoints.size() + 2);
 	glm::vec4 eLocal = { 1.0f, 0.0f, 0.0f, 1.0f };
 	glm::vec3 endAffec = lstJnt->mWorldMtx*eLocal;
 	float beta = 0.0001f;
-	auto delE = beta * (goal - endAffec);
+	auto delE = goal - endAffec;
 
 	// Need an if check here to short-circuit if endeffector is near enough or stretched max
 	for (int ii = 0; ii < 10; ++ii) {
 		int count = 0;
+		float maxDelPhi = 0.0f;
+		delPhiAll.clear();
 		for (const auto& jnt : mJoints) {
 			if (count == 0) {
 				// Base joint.. Handle separately as this has 3 DOFs...
@@ -63,7 +67,10 @@ void Chain::Update()
 				a = glm::normalize(a);
 				auto delEdelphi = glm::cross(a, (endAffec - r));
 				auto delPhi = glm::dot(delEdelphi, delE);
-				jnt->mPose.x += delPhi;
+				delPhiAll.emplace_back(delPhi);
+				if (std::abs(delPhi) > maxDelPhi)
+					maxDelPhi = std::abs(delPhi);
+				//jnt->mPose.x += delPhi;
 
 				// Y
 				glm::mat4 local1(1.0);
@@ -72,14 +79,20 @@ void Chain::Update()
 				a = glm::normalize(a);
 				delEdelphi = glm::cross(a, (endAffec - r));
 				delPhi = glm::dot(delEdelphi, delE);
-				jnt->mPose.y += delPhi;
+				delPhiAll.emplace_back(delPhi);
+				if (std::abs(delPhi) > maxDelPhi)
+					maxDelPhi = std::abs(delPhi);
+				//jnt->mPose.y += delPhi;
 
 				// Z
 				a = jnt->mParentWorldMtx * glm::vec4{ 0.0f, 0.0f, 1.0f, 0.0f };
 				a = glm::normalize(a);
 				delEdelphi = glm::cross(a, (endAffec - r));
 				delPhi = glm::dot(delEdelphi, delE);
-				jnt->mPose.z += delPhi;
+				delPhiAll.emplace_back(delPhi);
+				if (std::abs(delPhi) > maxDelPhi)
+					maxDelPhi = std::abs(delPhi);
+				//jnt->mPose.z += delPhi;
 
 			}
 			else {
@@ -89,12 +102,28 @@ void Chain::Update()
 				a = glm::normalize(a);
 				auto delEdelphi = glm::cross(a, (endAffec - r));
 				auto delPhi = glm::dot(delEdelphi, delE);
-				jnt->mPose.z += delPhi;
+				delPhiAll.emplace_back(delPhi);
+				if (std::abs(delPhi) > maxDelPhi)
+					maxDelPhi = std::abs(delPhi);
+				//jnt->mPose.z += delPhi;
+			}
+		}
+
+		beta = THRESH / std::max(THRESH, maxDelPhi);
+		// Now update Joint Pose...
+		count = 0;
+		for (const auto& jnt : mJoints) {
+			if (count == 0) {
+				jnt->mPose.x += beta * delPhiAll[count++];
+				jnt->mPose.y += beta * delPhiAll[count++];
+				jnt->mPose.z += beta * delPhiAll[count++];
+			}
+			else {
+				jnt->mPose.z += beta * delPhiAll[count++];
 			}
 		}
 		mChain->Update(glm::mat4(1.0));
 	}
-#endif
 }
 
 void Chain::Draw(const glm::mat4 & viewProjMtx, uint shader)
