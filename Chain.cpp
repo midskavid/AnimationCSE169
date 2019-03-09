@@ -10,7 +10,7 @@ void Chain::Init(int numJoints)
 	for (int ii = 0; ii < numJoints; ++ii) {
 		auto jnt = std::make_shared<BallJoint>();
 #pragma message("FOR NOW ALL HAVE 1DOF")
-		if (ii != -1) {
+		if (ii != 0) {
 			// This joint would have 1 DOF
 			DoF dof;
 			dof.LimitRotation(0.0f, 0.0f);
@@ -48,13 +48,49 @@ void Chain::Update()
 
 	// Need an if check here to short-circuit if endeffector is near enough or stretched max
 	for (int ii = 0; ii < 10; ++ii) {
+		int count = 0;
 		for (const auto& jnt : mJoints) {
-			glm::vec3 a = jnt->mParentWorldMtx * glm::vec4{ 0.0f, 0.0f, 1.0f, 0.0f };
-			glm::vec3 r = jnt->mParentWorldMtx * glm::vec4{ jnt->mOffset, 1.0f };
-			a = glm::normalize(a);
-			auto delEdelphi = glm::cross(a, (endAffec - r));
-			auto delPhi = glm::dot(delEdelphi, delE);
-			jnt->mPose.z += delPhi;
+			if (count == 0) {
+				// Base joint.. Handle separately as this has 3 DOFs...
+				++count;
+				glm::vec3 r = jnt->mParentWorldMtx * glm::vec4{ jnt->mOffset, 1.0f };
+
+				// X
+				glm::mat4 local(1.0);
+				local = glm::rotate(local, glm::clamp(jnt->mPose.z, jnt->mJointDoF[2].GetLimits().x, jnt-> mJointDoF[2].GetLimits().y), glm::vec3(0, 0, 1));//about Z
+				local = glm::rotate(local, glm::clamp(jnt->mPose.y, jnt->mJointDoF[1].GetLimits().x, jnt->mJointDoF[1].GetLimits().y), glm::vec3(0, 1, 0));//about Y
+				glm::vec3 a = jnt->mParentWorldMtx * local * glm::vec4{ 1.0f, 0.0f, 0.0f, 0.0f };				
+				a = glm::normalize(a);
+				auto delEdelphi = glm::cross(a, (endAffec - r));
+				auto delPhi = glm::dot(delEdelphi, delE);
+				jnt->mPose.x += delPhi;
+
+				// Y
+				glm::mat4 local1(1.0);
+				local1 = glm::rotate(local1, glm::clamp(jnt->mPose.z, jnt->mJointDoF[2].GetLimits().x, jnt->mJointDoF[2].GetLimits().y), glm::vec3(0, 0, 1));//about Z
+				a = jnt->mParentWorldMtx * local1 * glm::vec4{ 0.0f, 1.0f, 0.0f, 0.0f };
+				a = glm::normalize(a);
+				delEdelphi = glm::cross(a, (endAffec - r));
+				delPhi = glm::dot(delEdelphi, delE);
+				jnt->mPose.y += delPhi;
+
+				// Z
+				a = jnt->mParentWorldMtx * glm::vec4{ 0.0f, 0.0f, 1.0f, 0.0f };
+				a = glm::normalize(a);
+				delEdelphi = glm::cross(a, (endAffec - r));
+				delPhi = glm::dot(delEdelphi, delE);
+				jnt->mPose.z += delPhi;
+
+			}
+			else {
+				++count;
+				glm::vec3 a = jnt->mParentWorldMtx * glm::vec4{ 0.0f, 0.0f, 1.0f, 0.0f };
+				glm::vec3 r = jnt->mParentWorldMtx * glm::vec4{ jnt->mOffset, 1.0f };
+				a = glm::normalize(a);
+				auto delEdelphi = glm::cross(a, (endAffec - r));
+				auto delPhi = glm::dot(delEdelphi, delE);
+				jnt->mPose.z += delPhi;
+			}
 		}
 		mChain->Update(glm::mat4(1.0));
 	}
