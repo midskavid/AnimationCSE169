@@ -247,31 +247,37 @@ void Tester::Keyboard(int key,int x,int y) {
 		case 'q': {
 			// Increase X
 			mGoal->Update(glm::vec3{ Change, 0.0f,0.0f });
+			mChain->mConverged = false;
 			break;
 		}
 		case 'w': {
 			// Increase Y
 			mGoal->Update(glm::vec3{ 0.0f, Change, 0.0f });
+			mChain->mConverged = false;
 			break;
 		}
 		case 'e': {
 			// Increase Z
 			mGoal->Update(glm::vec3{ 0.0f,0.0f, Change });
+			mChain->mConverged = false;
 			break;
 		}
 		case 'a': {
 			// Decrease X
 			mGoal->Update(glm::vec3{ -Change, 0.0f,0.0f });
+			mChain->mConverged = false;
 			break;
 		}
 		case 's': {
 			// Decrease Y
 			mGoal->Update(glm::vec3{ 0.0f, -Change,0.0f });
+			mChain->mConverged = false;
 			break;
 		}
 		case 'd': {
 			// Decrease Z
 			mGoal->Update(glm::vec3{ 0.0f,0.0f, -Change });
+			mChain->mConverged = false;
 			break;
 		}
 #else

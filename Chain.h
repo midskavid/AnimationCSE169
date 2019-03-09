@@ -11,11 +11,11 @@ public:
 	void Init(int numJoints);
 	void Update();
 	void Draw(const glm::mat4 &viewProjMtx, uint shader);
-private:
-	void ComputeJacobian();
+
 public:
 	std::shared_ptr<Joint> mChain;
 	std::vector<std::shared_ptr<Joint>> mJoints;
+	bool mConverged = true;
 };
 #endif // !CHAIN_H
 

@@ -1,6 +1,6 @@
 #include "Goal.h"
 
-glm::vec3 Goal::mPosGoal = { 10.0f,0.0f,0.0f };
+glm::vec3 Goal::mPosGoal = { 0.0f,0.0f,0.0f };
 
 void Goal::Update(glm::vec3 pos)
 {
